@@ -3,7 +3,6 @@ import { posts } from "../data/posts";
 import parse from "html-react-parser";
 export default function ArticleList() {
   const navigate = useNavigate();
-  const handleClickToDetail = () => navigate("/detail");
 
   return (
     <main className="home-container max-w-[800px] mx-auto my-[40px] px-[1rem] overflow-auto">
@@ -11,8 +10,8 @@ export default function ArticleList() {
       {posts.map((post) => (
         <article
           key={post.id} //追加
-          className="border-1 border-[#ccc] p-[1rem] flex-row mb-[2rem]"
-          onClick={handleClickToDetail}
+          className="border-1 border-[#ccc] p-[1rem] flex-row mb-[2rem] cursor-pointer"
+          onClick={() => navigate(`/detail/${post.id}`)}
         >
           <div className="post-info flex justify-between">
             <div className="date text-[#888] text-[0.8rem]">
