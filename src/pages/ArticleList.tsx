@@ -6,9 +6,9 @@ export default function ArticleList() {
     <main className="home-container max-w-[800px] mx-auto my-[40px] px-[1rem] overflow-auto">
       {/* 記事の数だけ繰り返し表示 */}
       {posts.map((post) => (
-        <Link to={`/details/${post.id}`}>
+        <Link to={`/details/${post.id}`} key={post.id}>
           <article
-            key={post.id} //追加
+            //追加
             className="border-1 border-[#ccc] p-[1rem] flex-row mb-[2rem] cursor-pointer"
           >
             <div className="post-info flex justify-between">
