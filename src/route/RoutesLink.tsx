@@ -11,7 +11,7 @@ const RoutesLink = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<RouterApp />}>
       <Route path="/" element={<ArticleList />}></Route>
-      <Route path="/detail/:id" element={<ArticleDetail />}></Route>
+      <Route path="/details/:id" element={<ArticleDetail />}></Route>
       <Route path="/contact"></Route>
     </Route>
   )
