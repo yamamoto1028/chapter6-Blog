@@ -1,10 +1,24 @@
 import { useNavigate } from "react-router-dom";
-import { posts } from "../data/posts";
+// import { posts } from "../data/posts";
 import parse from "html-react-parser";
+import { useEffect, useState } from "react";
 export default function ArticleList() {
   const navigate = useNavigate();
   const handleClickToDetail = () => navigate("/detail");
+  const [posts, setPosts] = useState([]);
 
+  useEffect(() => {
+    const getArticleData = async () => {
+      const res = await fetch(
+        `https://1hmfpsvto6.execute-api.ap-northeast-1.amazonaws.com/dev/posts`
+      );
+      const data = await res.json();
+      const dataResult = data.posts;
+      console.log(dataResult);
+      setPosts(dataResult);
+    };
+    getArticleData();
+  }, []);
   return (
     <main className="home-container max-w-[800px] mx-auto my-[40px] px-[1rem] overflow-auto">
       {/* 記事の数だけ繰り返し表示 */}
