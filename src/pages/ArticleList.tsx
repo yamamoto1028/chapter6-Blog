@@ -25,8 +25,8 @@ export default function ArticleList() {
       {posts.map((post) => (
         <article
           key={post.id} //追加
-          className="border-1 border-[#ccc] p-[1rem] flex-row mb-[2rem]"
-          onClick={handleClickToDetail}
+          className="border-1 border-[#ccc] p-[1rem] flex-row mb-[2rem] cursor-pointer"
+          onClick={() => navigate(`/detail/${post.id}`)}
         >
           <div className="post-info flex justify-between">
             <div className="date text-[#888] text-[0.8rem]">
