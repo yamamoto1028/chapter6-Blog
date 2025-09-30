@@ -9,9 +9,7 @@ import RouterApp from "./RouterApp";
 const RoutesLink = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<RouterApp />}>
-      <Route path="/" element={<ArticleList />}>
-        記事一覧
-      </Route>
+      <Route path="/" element={<ArticleList />}></Route>
       <Route path="/detail"></Route>
       <Route path="/contact"></Route>
     </Route>
