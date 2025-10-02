@@ -6,3 +6,12 @@ export type ArticleType = Array<{
   categories: string[];
   content: string;
 }>;
+
+export type ArticleTypeChild = {
+  id: number;
+  title: string;
+  thumbnailUrl: string;
+  createdAt: string;
+  categories: string[];
+  content: string;
+};
