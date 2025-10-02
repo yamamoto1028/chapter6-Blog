@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import { useEffect, useState } from "react";
-import type { ArticleTypeChild } from "../types/types";
+import type { ArticleType } from "../types/types";
 
 export default function ArticleDetail() {
-  const [posts, setPosts] = useState<ArticleTypeChild>();
+  const [posts, setPosts] = useState<ArticleType>();
   const { id } = useParams(); //URLのパラメータのIDを取得
   const [loading, setLoading] = useState(false);
 
@@ -13,7 +13,7 @@ export default function ArticleDetail() {
       try {
         setLoading(true);
         const data = await fetch(
-          `https://1hmfpsvto6.execute-api.ap-northeast-1.amazonaws.com/dev/posts/sss${id}`
+          `https://1hmfpsvto6.execute-api.ap-northeast-1.amazonaws.com/dev/posts/${id}`
         );
         const res = await data.json();
         const resResult = await res.post;
@@ -53,7 +53,7 @@ export default function ArticleDetail() {
                 .join("/")}
             </div>
             <div className="lang-box flex flex-wrap">
-              {posts?.categories.map((category) => (
+              {posts.categories.map((category) => (
                 <div className="post-lang text-[#06c] text-[0.8rem] border-1 border-[#06c] rounded-[0.2rem] mr-[0.5rem] px-[0.4rem] py-[0.2rem]">
                   {category}
                 </div>

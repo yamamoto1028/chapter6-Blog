@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 import parse from "html-react-parser";
 import { useEffect, useState } from "react";
-import type { ArticleType } from "../types/types";
+import type { ArticleTypes } from "../types/types";
 
 export default function ArticleList() {
-  const [posts, setPosts] = useState<ArticleType>();
+  const [posts, setPosts] = useState<ArticleTypes>();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {

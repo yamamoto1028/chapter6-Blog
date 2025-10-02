@@ -1,13 +1,4 @@
-export type ArticleType = Array<{
-  id: number;
-  title: string;
-  thumbnailUrl: string;
-  createdAt: string;
-  categories: string[];
-  content: string;
-}>;
-
-export type ArticleTypeChild = {
+export type ArticleType = {
   id: number;
   title: string;
   thumbnailUrl: string;
@@ -15,3 +6,5 @@ export type ArticleTypeChild = {
   categories: string[];
   content: string;
 };
+
+export type ArticleTypes = ArticleType[];
