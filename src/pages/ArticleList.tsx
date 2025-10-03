@@ -1,7 +1,39 @@
 import { Link } from "react-router-dom";
-import { posts } from "../data/posts";
 import parse from "html-react-parser";
+import { useEffect, useState } from "react";
+import type { ArticleTypes } from "../types/types";
+
 export default function ArticleList() {
+  const [posts, setPosts] = useState<ArticleTypes>();
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const getArticleData = async () => {
+      try {
+        setLoading(true);
+        const data = await fetch(
+          "https://1hmfpsvto6.execute-api.ap-northeast-1.amazonaws.com/dev/posts"
+        );
+        const res = await data.json();
+        const resResult = res.posts;
+        setPosts(resResult);
+      } catch (error) {
+        console.error(`記事データ取得中にエラーが発生しました`, error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getArticleData();
+  }, []);
+
+  if (loading) {
+    return <div>読み込み中・・・</div>;
+  }
+
+  if (!posts) {
+    return <div>データなし</div>;
+  }
+
   return (
     <main className="home-container max-w-[800px] mx-auto my-[40px] px-[1rem] overflow-auto">
       {/* 記事の数だけ繰り返し表示 */}
