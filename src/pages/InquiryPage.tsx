@@ -1,4 +1,9 @@
 import { useState } from "react";
+import FormItem from "../components/FormItem";
+import Input from "../components/Input";
+import ErrorMessage from "../components/ErrorMessage";
+import Label from "../components/Label";
+import Textarea from "../components/Textarea";
 
 export default function InquiryPage() {
   // inputの状態管理
@@ -7,16 +12,16 @@ export default function InquiryPage() {
   const [text, setText] = useState("");
 
   // エラー状態の管理→状態によって処理分岐したいのはhandleCheckInput関数の中だけなのでコンポーネント全体でstate管理する必要ないので消し結果だけ戻しておけばJSXの表示分岐に使える
-  // const [isError, setIsError] = useState(false);
-
   // エラーメッセージの管理
   const [nameError, setNameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [textError, setTextError] = useState("");
 
+  // 送信中の状態管理
+  const [sending, setSending] = useState(false);
+
   // 送信ボタン押下でしたいチェック処理-----------------
   const handleCheckInput = () => {
-    console.log(`handleCheckInput`);
     let isError = false; //関数内では変数で状態を制御して出力時にsetStateに入れる
     let nameErrMessage = "";
     let emailErrMessage = "";
@@ -27,7 +32,7 @@ export default function InquiryPage() {
       isError = true;
       // 名前の30文字以内チェック
     } else if (name.length > 30) {
-      nameErrMessage = "お名前は30文字以内で入力してください";
+      nameErrMessage = `お名前は30文字以内で入力してください(現在の文字数：${name.length}文字)`;
       isError = true;
     }
     // アドレスの入力有無チェック　→状態管理
@@ -47,15 +52,12 @@ export default function InquiryPage() {
 
       // 本文の500文字以内チェック
     } else if (text.length > 500) {
-      textErrMessage = "本文は500文字以内で入力してください";
+      textErrMessage = `本文は500文字以内で入力してください(現在の文字数：${text.length}文字)`;
       isError = true;
     }
     setNameError(nameErrMessage);
     setEmailError(emailErrMessage);
     setTextError(textErrMessage);
-    // setIsError(isError);
-    console.log(`letのisError：${isError}`);
-
     return isError;
   };
 
@@ -65,96 +67,97 @@ export default function InquiryPage() {
     setText("");
   };
 
-  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     //イベント(e)にも型付けしないと赤字怒られる
-    e.preventDefault();
-    console.log("handleSubmit Clicked!");
-    handleCheckInput(); //入力内容チェックしエラーMSGをセット
-    console.log(handleCheckInput());
-    if (handleCheckInput()) {
-      alert("入力内容に誤りがあります");
-      return;
-    }
-
-    // 送信処理
-    fetch(
-      "https://1hmfpsvto6.execute-api.ap-northeast-1.amazonaws.com/dev/contacts",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name: name, email: email, text: text }), //送信データをオブジェクト形式で渡す
+    try {
+      if (sending) return;
+      e.preventDefault();
+      setSending(true);
+      handleCheckInput(); //入力内容チェックしエラーMSGをセット
+      if (handleCheckInput()) {
+        alert("入力内容に誤りがあります");
+        return;
       }
-    );
-    alert("送信完了しました");
+      // 送信処理
+      await fetch(
+        "https://1hmfpsvto6.execute-api.ap-northeast-1.amazonaws.com/dev/contact",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name: name, email: email, text: text }), //送信データをオブジェクト形式で渡す
+        }
+      );
+      alert("送信しました");
+      handleClearInput();
+    } catch (error) {
+      console.log(`送信中にエラーが発生しました`, error);
+    } finally {
+      setSending(false);
+    }
   };
+
   return (
     <>
       <main className="inquiry-page max-w-[800px] m-auto py-10">
         <h1 className="title font-[700] text-xl">問合わせフォーム</h1>
         <form
+          onSubmit={handleSubmit}
           action="https://1hmfpsvto6.execute-api.ap-northeast-1.amazonaws.com/dev/contacts"
           method="post"
-          className="inquiry-form mt-10"
+          className="inquiry-form pt-4"
         >
-          <div className="input-name flex justify-between w-[100%] items-center">
-            <label className="name-tag w-[240px]">お名前</label>
-            <div className="input-box w-full">
-              <input
+          <FormItem>
+            <Label for="name" text="お名前" />
+            <div className="input-wrapper w-full">
+              <Input
                 id="name"
                 type="text"
-                className="name-box w-full p-4 border border-gray-300 rounded-lg"
-                maxLength={30}
                 value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
+                onChange={(value: string) => setName(value)}
+                // maxLength={30}
               />
-              {nameError && <p className="text-sm text-red-700">{nameError}</p>}
+              <ErrorMessage message={nameError} />
             </div>
-          </div>
-          <div className="email flex justify-between mt-6 items-center">
-            <label className="email-tag w-[240px]">メールアドレス</label>
-            <div className="input-box w-full">
-              <input
+          </FormItem>
+          <FormItem>
+            <Label for="email" text="メールアドレス" />
+            <div className="input-wrapper w-full">
+              <Input
                 id="email"
                 type="email"
-                className="email-box w-full p-4 border border-gray-300 rounded-lg"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
+                onChange={(value: string) => setEmail(value)}
               />
-              {emailError && (
-                <p className="text-sm text-red-700">{emailError}</p>
-              )}
+              <ErrorMessage message={emailError} />
             </div>
-          </div>
-          <div className="text flex justify-between mt-6 items-center">
-            <label className="text-tag w-[240px]">本文</label>
-            <div className="input-box w-full">
-              <textarea
+          </FormItem>
+          <FormItem>
+            <Label for="message" text="本文" />
+            <div className="input-wrapper w-full">
+              <Textarea
                 id="message"
-                className="text-box resize-none auto-cols-[8] w-full p-4 border border-gray-300 rounded-lg"
                 rows={8}
-                maxLength={500}
                 value={text}
-                onChange={(e) => setText(e.target.value)}
-                required
+                onChange={(value: string) => setText(value)}
+                // maxLength={500}
               />
-              {textError && <p className="text-sm text-red-700">{textError}</p>}
+              <ErrorMessage message={textError} />
             </div>
-          </div>
+          </FormItem>
           <div className="button-box flex justify-center mt-10">
             <button
-              type="submit"
               className="send-button text-white font-bold rounded-lg bg-gray-800 py-2 px-4"
-              onClick={handleSubmit}
+              type="submit"
+              disabled={sending}
             >
               送信
             </button>
             <button
-              type="reset"
               className="clear-button bg-gray-200 font-bold rounded-lg ml-4 py-2 px-4"
+              type="reset"
+              disabled={sending}
               onClick={handleClearInput}
             >
               クリア
