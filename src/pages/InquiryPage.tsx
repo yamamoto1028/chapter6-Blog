@@ -109,38 +109,41 @@ export default function InquiryPage() {
           className="inquiry-form pt-4"
         >
           <FormItem>
-            <Label for="name" text="お名前" />
+            <Label htmlFor="name" children="お名前" />
             <div className="input-wrapper w-full">
               <Input
                 id="name"
                 type="text"
                 value={name}
-                onChange={(value: string) => setName(value)}
+                onChange={(e) => setName(e.target.value)}
+                disabled={sending}
                 // maxLength={30}
               />
               <ErrorMessage message={nameError} />
             </div>
           </FormItem>
           <FormItem>
-            <Label for="email" text="メールアドレス" />
+            <Label htmlFor="email" children="メールアドレス" />
             <div className="input-wrapper w-full">
               <Input
                 id="email"
                 type="email"
                 value={email}
-                onChange={(value: string) => setEmail(value)}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={sending}
               />
               <ErrorMessage message={emailError} />
             </div>
           </FormItem>
           <FormItem>
-            <Label for="message" text="本文" />
+            <Label htmlFor="message" children="本文" />
             <div className="input-wrapper w-full">
               <Textarea
                 id="message"
                 rows={8}
                 value={text}
-                onChange={(value: string) => setText(value)}
+                onChange={(e) => setText(e.target.value)}
+                disabled={sending}
                 // maxLength={500}
               />
               <ErrorMessage message={textError} />
